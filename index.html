@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Estate Inspection</title>
+  <style>
+    /* CSS Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .template {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* Two columns */
+      gap: 0; /* No gap between sections */
+    }
+
+    .section {
+      border: 0.75pt solid #000000; /* Border around each section */
+      padding: 10px;
+      text-align: center;
+      background-color: white;
+      min-height: 75px; /* Ensure sections have a minimum height */
+      display: flex;
+      flex-direction: column; /* Stack children vertically */
+      align-items: center; /* Center content horizontally */
+      justify-content: space-between; /* Space out image and label */
+    }
+
+    /* Add right border to the right-most sections */
+    .section:nth-child(2n) {
+      border-right: 0.75pt solid #000000;
+    }
+
+    /* Remove bottom border for sections in the first row */
+    .section:nth-child(-n+2) {
+      border-bottom: none;
+    }
+
+    .section h3 {
+      margin: 10px 0 0; /* Add space above the label */
+      color: #555;
+      height: 10%; /* Label takes up 10% of section height */
+      text-align: center; /* Center the label text */
+    }
+
+    .image-placeholder {
+      width: 100%;
+      height: 90%; /* Image placeholder takes up 90% of section height */
+      background-color: #eee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+    }
+
+    .image-container {
+      position: relative;
+      width: 100%;
+      height: 100%; /* Image container takes up full height of placeholder */
+    }
+
+    .date-stamp {
+      position: absolute;
+      bottom: 5px;
+      left: 5px;
+      background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+      color: red; /* Red text color */
+      padding: 2px 5px;
+      font-size: 12px;
+      border-radius: 3px;
+    }
+
+    .camera-section {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    #camera-feed {
+      width: 100%;
+      max-width: 300px;
+      border: 2px solid #ccc;
+      background-color: #000;
+    }
+
+    #capture-button {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #capture-button:hover {
+      background-color: #0056b3;
+    }
+
+    #section-select {
+      margin-top: 10px;
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    .actions {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .actions button {
+      margin: 5px;
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .actions button:hover {
+      background-color: #218838;
+    }
+
+    /* Minimize space between rows in the header div */
+    .container > div p {
+      margin: 0; /* Remove default margin */
+      padding: 0; /* Remove default padding */
+      line-height: 1.2; /* Reduce line height */
+    }
+
+    /* Style for input fields in the header */
+    .header-input {
+      font-family: Arial, sans-serif;
+      font-size: 10.5pt;
+      border: 1px solid #ccc;
+      padding: 2px;
+      margin: 0 2px;
+      width: 45%; /* Adjust width for two inputs per row */
+    }
+
+    .header-input:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+
+    /* Adjust input widths for specific rows */
+    .header-input.full-width {
+      width: 95%; /* Full width for single input rows */
+    }
+
+    /* Ensure inputs fit on one line */
+    .header-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px; /* Space between rows */
+    }
+
+    /* Add a thin line border only to the bottom of the third row */
+    .header-row:nth-child(3) {
+      border-bottom: 0.75pt solid #000000; /* Thin line border at the bottom */
+      padding-bottom: 5px; /* Add some padding to separate the border from inputs */
+    }
+
+    .header-row span {
+      white-space: nowrap; /* Prevent text from wrapping */
+    }
+
+    /* Style for the image in the header */
+    .header-image {
+      width: 66px;
+      height: 64px;
+      margin-right: 10px; /* Space between image and text */
+    }
+
+    /* Flex container for image and inputs */
+    .header-container {
+      display: none; /* Hide the header container on the web page */
+    }
+
+    /* Table Header Styles */
+    .table-header {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* Match the template grid */
+      gap: 0; /* No gap between columns */
+      border: 0.75pt solid #000000; /* Border around the table header */
+      background-color: #d9d9d9; /* Background color for header */
+      display: none; /* Hide the header container on the web page */
+    }
+
+    .table-header div {
+      padding: 5px; /* Add padding for better spacing */
+      text-align: center; /* Center-align text */
+      border-right: 0.75pt solid #000000; /* Right border for each cell */
+    }
+
+    .table-header div:last-child {
+      border-right: none; /* Remove right border for the last cell */
+    }
+    
+    /* Modal Styles */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1000; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgba(0, 0, 0, 0.5); /* Black with opacity */
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto; /* 10% from the top and centered */
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%; /* Could be more or less, depending on screen size */
+      max-width: 500px; /* Maximum width */
+      border-radius: 5px;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button[type="submit"] {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #0056b3;
+    }    
+    
+    /* Print Styles */
+    @media print {
+      body {
+        margin: 20px; /* Match web margins */
+        padding: 0;
+        background-color: #fff;
+      }
+
+      .container {
+        max-width: 100%;
+        box-shadow: none;
+        padding: 20px; /* Match web padding */
+      }
+
+      .template {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0; /* No gap between sections */
+      }
+
+      .section {
+        border: 0.75pt solid #000000; /* Border around each section */
+        background-color: white;
+        min-height: 150px; /* Fixed height for sections */
+        page-break-inside: avoid; /* Avoid breaking sections across pages */
+        padding: 10px; /* Match web padding */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      /* Add right border to the right-most sections */
+      .section:nth-child(2n) {
+        border-right: 0.75pt solid #000000;
+      }
+
+      /* Remove bottom border for sections in the first row */
+      .section:nth-child(-n+2) {
+        border-bottom: none;
+      }
+
+      .section h3 {
+        margin: 10px 0 0; /* Match web margin */
+        color: #555;
+        text-align: center; /* Center the label text */
+        font-size: 14px; /* Adjust font size for print */
+      }
+
+      .image-placeholder {
+        background-color: white;
+        width: 100%;
+        height: 90%; /* Match web height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .image-container img {
+        max-width: 100%;
+        height: auto;
+      }
+
+      .date-stamp {
+        background-color: rgba(0, 0, 0, 0.7);
+        color: red;
+      }
+
+      .page-break {
+        page-break-after: always; /* Force a page break */
+      }
+
+      /* Ensure the header container is visible in the PDF */
+      .header-container {
+        display: block !important; /* Force block layout in print */
+      }
+
+      /* Hide unnecessary elements for printing */
+      .camera-section, .actions {
+        display: none;
+      }
+
+      /* Table Header Styles for Print */
+      .table-header {
+        display: grid !important; /* Force grid layout in print */
+        grid-template-columns: repeat(2, 1fr) !important; /* Match the template grid */
+        gap: 0 !important; /* No gap between columns */
+        border: 0.75pt solid #000000 !important; /* Border around the table header */
+        background-color: #d9d9d9 !important; /* Force background color */
+        -webkit-print-color-adjust: exact; /* Ensure background color is printed */
+        print-color-adjust: exact; /* Standard property */
+      }
+
+      .table-header div {
+        padding: 5px !important; /* Add padding for better spacing */
+        text-align: center !important; /* Center-align text */
+        border-right: 0.75pt solid #000000 !important; /* Right border for each cell */
+      }
+
+      .table-header div:last-child {
+        border-right: none !important; /* Remove right border for the last cell */
+      }
+
+      /* Ensure the bottom border under the input div is visible in print */
+      .header-row:nth-child(3) {
+        border-bottom: 0.75pt solid #000000 !important; /* Force bottom border */
+        padding-bottom: 5px !important; /* Add padding to separate the border from inputs */
+      }
+    }
+    
+    /* Style the image placeholder */
+    .image-placeholder {
+      width: 100%;
+      height: 100%; /* Ensure the placeholder takes up the full height */
+      background-color: white; /* Placeholder background color */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative; /* Required for pseudo-element positioning */
+    }
+
+    /* Add the word "Description" using a pseudo-element */
+    .image-placeholder::before {
+      content: "Description"; /* Display the word "Description" */
+      font-size: 10pt; /* Set font size to 10pt */
+      font-weight: normal; /* Ensure the text is not bolded */
+      color: #000; /* Set text color to black */
+      position: absolute; /* Position the pseudo-element */
+      top: 50%; /* Center vertically */
+      left: 50%; /* Center horizontally */
+      transform: translate(-50%, -50%); /* Center the pseudo-element */
+      z-index: 1; /* Ensure the text appears above the placeholder */
+    }
+
+    /* Hide the pseudo-element when a photo is added */
+    .image-placeholder:has(img)::before {
+      display: none; /* Hide the "Description" text when a photo is present */
+    }
+
+    /* Style the h3 element */
+    .section h3 {
+      font-size: 10pt; /* Set font size to 10pt */
+      font-weight: normal; /* Ensure the text is not bolded */
+      color: #000; /* Set text color */
+      margin: 0; /* Remove default margin */
+      text-align: center; /* Center-align text */
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+  
+    <!-- Property Button -->
+    <button id="property-button" style="display: block; margin: 5px;
+          padding: 10px 20px;
+          background-color: #28a745;
+          color: #fff;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer; margin: 0 auto;">Property</button>
+    
+    <!-- Modal -->
+    <div id="property-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Property Details</h2>
+        <form id="property-form">
+          <div class="form-group">
+            <label for="case-number">Case #:</label>
+            <input type="text" id="case-number" name="case-number" required>
+          </div>
+          <div class="form-group">
+            <label for="todays-date">Today’s Date:</label>
+            <input type="date" id="todays-date" name="todays-date" required>
+          </div>
+          <div class="form-group">
+            <label for="full-address">Full Address:</label>
+            <input type="text" id="full-address" name="full-address" required>
+          </div>
+          <div class="form-group">
+            <label for="inspector">Inspector/Appraiser:</label>
+            <input type="text" id="inspector" name="inspector" required>
+          </div>
+          <div class="form-group">
+            <label for="reason-taken">Reason Taken:</label>
+            <input type="text" id="reason-taken" name="reason-taken" required>
+          </div>
+          
+            <div class="form-group">
+              <label>Company Logo:</label>
+              <input type="file" id="logo-upload" accept="image/*" style="display: none;">
+              <button type="button" id="upload-logo-btn" class="btn btn-secondary">Upload Logo</button>
+              <button type="button" id="use-default-logo" class="btn btn-secondary">Use Default Logo</button>
+              <div id="logo-preview" style="margin: 10px 0;">
+                <img src="" style="max-width: 100px; max-height: 100px; display: none;" alt="Logo Preview">
+              </div>
+            </div>
+          
+          <button type="submit">Save</button>
+        </form>
+      </div>
+    </div>  
+  
+    <!-- Header Div with Image and Input Fields -->
+    <div class="header-container">
+      <!-- Image Div -->
+      <div>
+        <img src="https://myfiles.space/user_files/263643_26d1228dd62ce66f/1742248470_hud-photo-upload-template/1742248470_hud-photo-upload-template-1.png" alt="Logo" class="header-image">
+      </div>
+
+      <!-- Input Fields Div -->
+      <div>
+        <!-- First Row: Case # and Today’s Date -->
+        <div class="header-row">
+          <span style="font-family:Arial; font-size:10.5pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Case #:</span>
+          <input type="text" class="header-input" value="261-931859" style="width: 100px;">
+          <span style="font-family:Arial; font-size:10.5pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Today’s Date:</span>
+          <input type="date" class="header-input" value="2025-01-23" style="width: 120px;">
+        </div>
+
+        <!-- Second Row: Full Address -->
+        <div class="header-row">
+          <span style="font-family:Arial; font-size:10pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Full Address:</span>
+          <input type="text" class="header-input full-width" value="2215 Camel Dr. Sterling Heights, MI 48310" style="width: 400px;">
+        </div>
+
+        <!-- Third Row: Inspector/Appraiser and Reason Taken -->
+        <div class="header-row">
+          <span style="font-family:Arial; font-size:10pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Inspector/Appraiser:</span>
+          <input type="text" class="header-input" value="Wendy Hopkins" style="width: 150px;">
+          <span style="font-family:Arial; font-size:10pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Reason taken:</span>
+          <input type="text" class="header-input" value="Routine" style="width: 120px;">
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Content at the Bottom of the Header Div -->
+    <p style="margin-bottom:0pt; line-height:115%; widows:0; orphans:0">
+      <span style="font-family:Arial">&#xa0;</span>
+    </p>
+
+    <!-- Table Header -->
+    <div class="table-header">
+      <div><strong>Photo, Date Taken, View, Description</strong></div>
+      <div><strong>Photo, Date Taken, View, Description</strong></div>
+    </div>
+
+    <!-- Template Divs -->
+    <div class="template">
+      <!-- Sections will be dynamically added here -->
+    </div>
+
+    <!-- Camera Section -->
+    <div class="camera-section">
+      <video id="camera-feed" autoplay></video>
+      <button id="capture-button">Take Photo</button>
+      <select id="section-select">
+        <option value="blank">Blank</option>
+        <option value="ac-unit">AC unit</option>
+        <option value="address">Address</option>
+        <option value="back-porch">Back porch</option>
+        <option value="back-yard">Back yard</option>
+        <option value="basement-bath">Basement bath</option>
+        <option value="basement-bath-plumbing">Basement bath plumbing</option>
+        <option value="basement-view-1">Basement view 1</option>
+        <option value="basement-view-2">Basement view 2</option>
+        <option value="basement-view-3">Basement view 3</option>
+        <option value="basement-view-4">Basement view 4</option>
+        <option value="bedroom-2-view-1">Bedroom 2 view 1</option>
+        <option value="bedroom-2-view-2">Bedroom 2 view 2</option>
+        <option value="bedroom-3-view-1">Bedroom 3 view 1</option>
+        <option value="bedroom-3-view-2">Bedroom 3 view 2</option>
+        <option value="bedroom-4-view-1">Bedroom 4 view 1</option>
+        <option value="bedroom-4-view-2">Bedroom 4 view 2</option>
+        <option value="bedroom-5-view-1">Bedroom 5 view 1</option>
+        <option value="bedroom-5-view-2">Bedroom 5 view 2</option>
+        <option value="closet">Closet</option>
+        <option value="combo-box-with-key">Combo box with key</option>
+        <option value="dining-room-view-1">Dining room view 1</option>
+        <option value="dining-room-view-2">Dining room view 2</option>
+        <option value="dishwasher">Dishwasher</option>
+        <option value="electric-meter">Electric meter</option>
+        <option value="electric-panel">Electric panel</option>
+        <option value="exterior-debris">Exterior debris</option>
+        <option value="family-room">Family room</option>
+        <option value="front-view">Front view</option>
+        <option value="fsm-notice">FSM notice</option>
+        <option value="furnace">Furnace</option>
+        <option value="garage-exterior">Garage exterior</option>
+        <option value="garage-interior">Garage interior</option>
+        <option value="gas-meter">Gas meter</option>
+        <option value="hallway">Hallway</option>
+        <option value="interior-debris">Interior debris</option>
+        <option value="kitchen-nook">Kitchen nook</option>
+        <option value="kitchen-plumbing">Kitchen plumbing</option>
+        <option value="kitchen-view-1">Kitchen view 1</option>
+        <option value="kitchen-view-2">Kitchen view 2</option>
+        <option value="laundry">Laundry</option>
+        <option value="living-room-view-1">Living room view 1</option>
+        <option value="living-room-view-2">Living room view 2</option>
+        <option value="main-bath">Main bath</option>
+        <option value="main-bath-plumbing">Main bath plumbing</option>
+        <option value="oven-stove">Oven/stove</option>
+        <option value="patio">Patio</option>
+        <option value="primary-bath">Primary bath</option>
+        <option value="primary-bath-plumbing">Primary bath plumbing</option>
+        <option value="primary-bedroom-1-view-1">Primary bedroom 1 view 1</option>
+        <option value="primary-bedroom-1-view-2">Primary bedroom 1 view 2</option>
+        <option value="refrigerator">Refrigerator</option>
+        <option value="repairs">Repairs</option>
+        <option value="roof">Roof</option>
+        <option value="side-view-1">Side view 1</option>
+        <option value="side-view-2">Side view 2</option>
+        <option value="sign-in-sheet">Sign in sheet</option>
+        <option value="stairs">Stairs</option>
+        <option value="street-sign">Street sign</option>
+        <option value="street-view-1">Street view 1</option>
+        <option value="street-view-2">Street view 2</option>
+        <option value="violation-notices">Violation notices</option>
+        <option value="water-heater">Water heater</option>
+        <option value="water-meter">Water meter</option>
+      </select>
+    </div>
+
+    <!-- Save and Share Buttons -->
+    <div class="actions">
+      <button id="save-pdf">Print Form</button>
+      <button id="share-email">Save Pics</button>
+    </div>
+  </div>
+
+  <script>
+    // Access the camera (back camera)
+    const video = document.getElementById('camera-feed');
+    const captureButton = document.getElementById('capture-button');
+    const sectionSelect = document.getElementById('section-select');
+
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: "environment" // Use the back camera
+      }
+    })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(error => {
+        console.error('Error accessing camera:', error);
+        alert('Unable to access camera. Please ensure permissions are granted.');
+      });
+
+    // Function to get the current date in a formatted string (without time)
+    function getDateStamp() {
+      const now = new Date();
+      // Format: "MM/DD/YYYY"
+      return now.toLocaleDateString();
+    }
+
+    // Print Preview
+    document.getElementById('save-pdf').addEventListener('click', function() {
+      // Create a new window for print preview
+      const printWindow = window.open('', '', 'width=800,height=600');
+      printWindow.document.write('<html><head><title>Inspection Report</title>');
+      printWindow.document.write('<style>');
+      printWindow.document.write(`
+        body {
+          font-family: Arial, sans-serif;
+          margin: 96px; /* Match web margins */
+          padding: 0;
+          background-color: #fff;
+        }
+        .container {
+          max-width: 100%;
+          box-shadow: none;
+          padding: 20px; /* Match web padding */
+        }
+        .template {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 0; /* No gap between sections */
+        }
+        .section {
+          border: 0.75pt solid #000000; /* Border around each section */
+          background-color: #f9f9f9;
+          min-height: 180px; /* Fixed height for sections */
+          page-break-inside: avoid; /* Avoid breaking sections across pages */
+          padding: 10px; /* Match web padding */
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
+          aspect-ratio: auto; /* Maintain the original aspect ratio */
+        }
+        /* Add right border to the right-most sections */
+        .section:nth-child(2n) {
+          border-right: 0.75pt solid #000000;
+        }
+        /* Remove bottom border for sections in the first row 
+        .section:nth-child(-n+2) {
+          border-bottom: none;
+        } */
+        .section h3 {
+          margin: 10px 0 0; /* Match web margin */
+          color: #555;
+          text-align: center; /* Center the label text */
+          font-size: 14px; /* Adjust font size for print */
+        }
+        .image-placeholder {
+          background-color: #eee;
+          width: 100%;
+          height: 90%; /* Match web height */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .image-container img {
+          max-width: 100%;
+          height: auto;
+        }
+        .date-stamp {
+          background-color: rgba(0, 0, 0, 0.7);
+          color: red;
+        }
+        .page-break {
+          page-break-after: always; /* Force a page break */
+        }
+        /* Ensure the header container is visible in the PDF */
+        .header-container {
+          display: block !important; /* Force block layout in print */
+        }
+        /* Hide unnecessary elements for printing */
+        .camera-section, .actions {
+          display: none;
+        }
+        /* Table Header Styles for Print */
+        .table-header {
+          display: grid !important; /* Force grid layout in print */
+          grid-template-columns: repeat(2, 1fr) !important; /* Match the template grid */
+          gap: 0 !important; /* No gap between columns */
+          border: 0.75pt solid #000000 !important; /* Border around the table header */
+          background-color: #d9d9d9 !important; /* Force background color */
+          -webkit-print-color-adjust: exact; /* Ensure background color is printed */
+          print-color-adjust: exact; /* Standard property */
+        }
+        .table-header div {
+          padding: 5px !important; /* Add padding for better spacing */
+          text-align: center !important; /* Center-align text */
+          border-right: 0.75pt solid #000000 !important; /* Right border for each cell */
+        }
+        .table-header div:last-child {
+          border-right: none !important; /* Remove right border for the last cell */
+        }
+        /* Ensure the bottom border under the input div is visible in print */
+        .header-row:nth-child(3) {
+          border-bottom: 0.75pt solid #000000 !important; /* Force bottom border */
+          padding-bottom: 5px !important; /* Add padding to separate the border from inputs */
+        }
+      `);
+      printWindow.document.write('</style></head><body>');
+
+      // Add the header div to the print preview
+      const headerDiv = document.querySelector('.header-container').cloneNode(true);
+      printWindow.document.body.appendChild(headerDiv);
+
+      // Add the paragraph to the print preview
+      const paragraph = document.querySelector('.container > p').cloneNode(true);
+      printWindow.document.body.appendChild(paragraph);
+
+      // Add the table header to the print preview
+      const tableHeader = document.querySelector('.table-header').cloneNode(true);
+      printWindow.document.body.appendChild(tableHeader);
+
+      // Add sections
+      const sections = document.querySelectorAll('.section');
+      printWindow.document.write('<div class="template">');
+
+      sections.forEach((section, index) => {
+        let sectionTitle = section.querySelector('h3').innerText; // Default to h3 text
+
+        const inputElement = section.querySelector('h3 input'); // Check for input in h3
+        if (inputElement) {
+          sectionTitle = inputElement.value; // Use input value if found
+        }
+
+        const sectionImage = section.querySelector('img');
+
+        // Write the section HTML
+        printWindow.document.write('<div class="section">');
+        if (sectionImage) {
+          printWindow.document.write(`<div class="image-container"><img src="${sectionImage.src}" alt="${sectionTitle}" style="max-height: 180px;"></div>`);
+        }
+        printWindow.document.write(`<h3>${sectionTitle}</h3>`);
+        printWindow.document.write('</div>');
+
+        // Add a page break after every 6 sections (3 rows)
+        if ((index + 1) % 6 === 0 && index !== sections.length - 1) {
+          // Close the current template div and add a page break
+          printWindow.document.write('</div><div class="page-break"></div>');
+
+          // Add the header div, p element, and table header to the new page
+          const newHeaderDiv = headerDiv.cloneNode(true);
+          printWindow.document.body.appendChild(newHeaderDiv);
+
+          const newParagraph = paragraph.cloneNode(true);
+          printWindow.document.body.appendChild(newParagraph);
+
+          const newTableHeader = tableHeader.cloneNode(true);
+          printWindow.document.body.appendChild(newTableHeader);
+
+          // Start a new template div for the next set of sections
+          printWindow.document.write('<div class="template">');
+        }
+      });
+
+      printWindow.document.write('</div></body></html>');
+
+      // Close the document and trigger print preview
+      printWindow.document.close();
+      printWindow.print();
+    });
+
+    // Array to store captured photos
+    let capturedPhotos = [];
+
+    // Save Pics (actually creates downloadable HTML file)
+    document.getElementById('share-email').addEventListener('click', function() {
+      if (capturedPhotos.length === 0) {
+        alert('No photos to share!');
+        return;
+      }
+
+      // Create HTML content with all images
+      let htmlContent = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Inspection Report</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            h1 { color: #333; text-align: center; }
+            .photo-container { margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+            .photo-label { font-weight: bold; margin-bottom: 5px; }
+            .photo-date { color: #666; font-size: 0.9em; }
+            img { max-width: 100%; height: auto; display: block; margin: 10px auto; }
+        </style>
+    </head>
+    <body>
+        <h1>Inspection Report</h1>
+      `;
+
+      // Add each photo to the HTML
+      capturedPhotos.forEach((photo, index) => {
+        htmlContent += `
+        <div class="photo-container">
+            <div class="photo-label">Photo ${index + 1}: ${photo.label || 'No label'}</div>
+            <div class="photo-date">${photo.date}</div>
+            <img src="${photo.dataUrl}" alt="Inspection Photo ${index + 1}">
+        </div>
+        `;
+      });
+
+      htmlContent += `</body></html>`;
+
+      // Create and trigger download
+      downloadHTMLFile(htmlContent, 'inspection_report.html');
+    });
+
+    // Function to download HTML file
+    function downloadHTMLFile(content, filename) {
+      const blob = new Blob([content], {type: 'text/html'});
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 100);
+    }
+
+    // Get the template container
+    const templateDiv = document.querySelector('.template');
+
+    // Array to track which sections are visible
+    let visibleSections = 6; // Start with 6 sections visible
+
+    // Function to create a section
+    function createSection(id) {
+      const sectionDiv = document.createElement('div');
+      sectionDiv.className = 'section';
+      sectionDiv.id = `section${id}`;
+
+      const imagePlaceholder = document.createElement('div');
+      imagePlaceholder.className = 'image-placeholder';
+
+      const h3Element = document.createElement('h3');
+      h3Element.textContent = ''; // Leave the h3 element blank
+
+      sectionDiv.appendChild(imagePlaceholder);
+      sectionDiv.appendChild(h3Element);
+
+      return sectionDiv;
+    }
+
+    // Function to add sections to the template
+    function addSections(count) {
+      for (let i = 1; i <= count; i++) {
+        const sectionDiv = createSection(i);
+        templateDiv.appendChild(sectionDiv);
+      }
+    }
+
+    // Initial setup: Add the first 6 sections
+    addSections(visibleSections);
+
+    // Function to check if a section has a photo
+    function hasPhoto(section) {
+      return section.querySelector('.image-placeholder img') !== null;
+    }
+
+    // Function to show the next 6 sections
+    function showNextSections() {
+      const sections = document.querySelectorAll('.section');
+      let photosAdded = 0;
+
+      // Count how many sections on the current page have photos
+      for (let i = visibleSections - 6; i < visibleSections; i++) {
+        if (hasPhoto(sections[i])) {
+          photosAdded++;
+        }
+      }
+
+      // If 6 photos are added, show the next 6 sections
+      if (photosAdded === 6) {
+        addSections(6);
+        visibleSections += 6; // Update the count of visible sections
+      }
+    }
+
+    // Function to get current date stamp (date only)
+    function getDateStamp() {
+      const now = new Date();
+      // Format as MM/DD/YYYY (US format) - adjust as needed for your locale
+      return `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()}`;
+
+      // For DD/MM/YYYY format (European style), use:
+      // return `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
+
+      // For YYYY-MM-DD format (ISO style), use:
+      // return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    }
+
+    // Ensure the event listener is attached only once
+    if (!captureButton.dataset.listenerAttached) {
+      captureButton.addEventListener('click', () => {
+        console.log('Capture button clicked');
+
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+
+        // Set canvas dimensions to match the camera feed
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        // Draw the image onto the canvas
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Add date stamp to the image
+        const dateStamp = getDateStamp();
+        context.font = '28px Arial';
+        context.fillStyle = 'red';
+        context.textAlign = 'left';
+        context.textBaseline = 'bottom';
+        context.fillText(dateStamp, 10, canvas.height - 10);
+
+        // Convert the canvas to an image
+        const image = new Image();
+        const imageUrl = canvas.toDataURL('image/png');
+        image.src = imageUrl;
+        image.style.maxWidth = '100%';
+        image.style.maxHeight = '100%';
+
+        // Store the photo data
+        capturedPhotos.push({
+          dataUrl: imageUrl,
+          date: dateStamp,
+          label: sectionSelect.options[sectionSelect.selectedIndex].text
+        });
+
+        // Create a container for the image and date stamp
+        const imageContainer = document.createElement('div');
+        imageContainer.className = 'image-container';
+        imageContainer.appendChild(image);
+
+        // Find the next available section without a photo
+        const sections = document.querySelectorAll('.section');
+        let nextAvailableSection = null;
+
+        for (const section of sections) {
+          const placeholder = section.querySelector('.image-placeholder');
+          if (!placeholder.querySelector('img')) {
+            nextAvailableSection = section;
+            break;
+          }
+        }
+
+        // If an available section is found, place the photo there
+        if (nextAvailableSection) {
+          const placeholder = nextAvailableSection.querySelector('.image-placeholder');
+          placeholder.innerHTML = '';
+          placeholder.appendChild(imageContainer);
+
+          // Get the selected option's text
+          const selectedOptionText = sectionSelect.options[sectionSelect.selectedIndex].text;
+          const h3Element = nextAvailableSection.querySelector('h3');
+
+          // If the selected option is "Blank", add an input element to the h3
+          if (selectedOptionText === 'Blank') {
+            h3Element.innerHTML = '';
+            const inputElement = document.createElement('input');
+            inputElement.type = 'text';
+            inputElement.style.fontSize = '10pt';
+            inputElement.style.border = 'none';
+            inputElement.style.outline = 'none';
+            inputElement.style.width = '100%';
+            inputElement.style.backgroundColor = 'transparent';
+            inputElement.style.textAlign = 'center';
+            inputElement.focus();
+            h3Element.appendChild(inputElement);
+          } else {
+            h3Element.textContent = selectedOptionText;
+          }
+
+          // Check if the next 6 sections should be shown
+          showNextSections();
+        } else {
+          alert('All sections already have photos!');
+        }
+      });
+
+      captureButton.dataset.listenerAttached = 'true';
+    }
+
+	// Get the modal and button elements
+    const propertyButton = document.getElementById('property-button');
+    const modal = document.getElementById('property-modal');
+    const closeButton = document.querySelector('.close');
+    const propertyForm = document.getElementById('property-form');
+
+    // Open the modal when the "Property" button is clicked
+    propertyButton.addEventListener('click', () => {
+      modal.style.display = 'block';
+    });
+
+    // Close the modal when the close button is clicked
+    closeButton.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    // Close the modal when clicking outside the modal
+    window.addEventListener('click', (event) => {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Handle form submission
+    // 1. First, add this HTML to your modal (before the submit button):
+    /*
+    <div class="form-group">
+      <label>Company Logo:</label>
+      <input type="file" id="logo-upload" accept="image/*" style="display: none;">
+      <button type="button" id="upload-logo-btn" class="btn btn-secondary">Upload Logo</button>
+      <button type="button" id="use-default-logo" class="btn btn-secondary">Use Default Logo</button>
+      <div id="logo-preview" style="margin: 10px 0;">
+        <img src="" style="max-width: 100px; max-height: 100px; display: none;" alt="Logo Preview">
+      </div>
+    </div>
+    */
+    
+    // 2. Then add this JavaScript:
+    
+    // Default logo as base64 encoded placeholder (small transparent PNG)
+    const DEFAULT_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+    
+    // Store the current logo
+    let currentLogo = DEFAULT_LOGO;
+    
+    // Set up logo upload functionality
+    document.getElementById('upload-logo-btn').addEventListener('click', function() {
+      document.getElementById('logo-upload').click();
+    });
+    
+    document.getElementById('logo-upload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+    
+      // Verify it's an image file
+      if (!file.type.match('image.*')) {
+        alert('Please select an image file (JPEG, PNG, etc.)');
+        return;
+      }
+    
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        currentLogo = event.target.result;
+        updateLogoPreview();
+      };
+      reader.onerror = function() {
+        alert('Error reading the image file');
+        currentLogo = DEFAULT_LOGO;
+        updateLogoPreview();
+      };
+      reader.readAsDataURL(file);
+    });
+    
+    // Default logo button
+    document.getElementById('use-default-logo').addEventListener('click', function() {
+      currentLogo = DEFAULT_LOGO;
+      updateLogoPreview();
+    });
+    
+    function updateLogoPreview() {
+      const previewImg = document.querySelector('#logo-preview img');
+      if (previewImg) {
+        previewImg.src = currentLogo;
+        previewImg.style.display = 'block';
+        previewImg.onerror = function() {
+          this.src = DEFAULT_LOGO;
+        };
+      }
+    }
+
+    // Modified header population function
+    function populateHeader(caseNumber, todaysDate, fullAddress, inspector, reasonTaken) {
+      const headerContainer = document.querySelector('.header-container');
+      if (!headerContainer) return;
+    
+      headerContainer.innerHTML = `
+        <div>
+          <img src="${currentLogo}" alt="Company Logo" class="header-image"
+               onerror="this.src='${DEFAULT_LOGO}'">
+        </div>
+        <div>
+          <div class="header-row">
+            <span>Case #:</span>
+            <input type="text" class="header-input" value="${caseNumber}">
+            <span>Today's Date:</span>
+            <input type="date" class="header-input" value="${todaysDate}">
+          </div>
+          <div class="header-row">
+            <span>Full Address:</span>
+            <input type="text" class="header-input full-width" value="${fullAddress}">
+          </div>
+          <div class="header-row">
+            <span>Inspector/Appraiser:</span>
+            <input type="text" class="header-input" value="${inspector}">
+            <span>Reason taken:</span>
+            <input type="text" class="header-input" value="${reasonTaken}">
+          </div>
+        </div>
+      `;
+    }
+
+    // Update your form submission handler
+    propertyForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      
+      const caseNumber = document.getElementById('case-number').value;
+      const todaysDate = document.getElementById('todays-date').value;
+      const fullAddress = document.getElementById('full-address').value;
+      const inspector = document.getElementById('inspector').value;
+      const reasonTaken = document.getElementById('reason-taken').value;
+      
+      populateHeader(caseNumber, todaysDate, fullAddress, inspector, reasonTaken);
+      modal.style.display = 'none';
+      // Close the modal
+      modal.style.display = 'none';
+    });    
+
+
+    // Initialize with default logo
+    updateLogoPreview();
+
+  </script>
+</body>
+</html>
