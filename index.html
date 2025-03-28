@@ -643,105 +643,100 @@
       const printWindow = window.open('', '', 'width=800,height=600');
       printWindow.document.write('<html><head><title>Inspection Report</title>');
       printWindow.document.write('<style>');
-printWindow.document.write(`
-  body {
-    font-family: Arial, sans-serif;
-    margin: 96px;
-    padding: 0;
-    background-color: #fff;
-  }
-  .container {
-    max-width: 100%;
-    box-shadow: none;
-    padding: 20px;
-  }
-  .template {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0;
-  }
-  .section {
-    border: 0.75pt solid #000000;
-    background-color: #f9f9f9;
-    min-height: 180px;
-    page-break-inside: avoid;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    aspect-ratio: auto;
-  }
-  .section:nth-child(2n) {
-    border-right: 0.75pt solid #000000;
-  }
-  .section h3 {
-    margin: 10px 0 0;
-    color: #555;
-    text-align: center;
-    font-size: 14px;
-  }
-  /* Updated: Square image placeholder */
-  .image-placeholder {
-    background-color: #eee;
-    width: 100%;
-    aspect-ratio: 1 / 1; /* Enforce square shape */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden; /* Prevent image overflow */
-  }
-  /* Updated: Square image container */
-  .image-container {
-    width: 100%;
-    aspect-ratio: 1 / 1; /* Enforce square shape */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden; /* Prevent image overflow */
-  }
-  /* Ensure images fill the square container */
-  .image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Crop to fill square */
-  }
-  .date-stamp {
-    background-color: rgba(0, 0, 0, 0.7);
-    color: red;
-  }
-  .page-break {
-    page-break-after: always;
-  }
-  .header-container {
-    display: block !important;
-  }
-  .camera-section, .actions {
-    display: none;
-  }
-  .table-header {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 0 !important;
-    border: 0.75pt solid #000000 !important;
-    background-color: #d9d9d9 !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-  .table-header div {
-    padding: 5px !important;
-    text-align: center !important;
-    border-right: 0.75pt solid #000000 !important;
-  }
-  .table-header div:last-child {
-    border-right: none !important;
-  }
-  .header-row:nth-child(3) {
-    border-bottom: 0.75pt solid #000000 !important;
-    padding-bottom: 5px !important;
-  }
-`);
-	    
+      printWindow.document.write(`
+        body {
+          font-family: Arial, sans-serif;
+          margin: 96px; /* Match web margins */
+          padding: 0;
+          background-color: #fff;
+        }
+        .container {
+          max-width: 100%;
+          box-shadow: none;
+          padding: 20px; /* Match web padding */
+        }
+        .template {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 0; /* No gap between sections */
+        }
+        .section {
+          border: 0.75pt solid #000000; /* Border around each section */
+          background-color: #f9f9f9;
+          min-height: 180px; /* Fixed height for sections */
+          page-break-inside: avoid; /* Avoid breaking sections across pages */
+          padding: 10px; /* Match web padding */
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
+          aspect-ratio: auto; /* Maintain the original aspect ratio */
+        }
+        /* Add right border to the right-most sections */
+        .section:nth-child(2n) {
+          border-right: 0.75pt solid #000000;
+        }
+        /* Remove bottom border for sections in the first row 
+        .section:nth-child(-n+2) {
+          border-bottom: none;
+        } */
+        .section h3 {
+          margin: 10px 0 0; /* Match web margin */
+          color: #555;
+          text-align: center; /* Center the label text */
+          font-size: 14px; /* Adjust font size for print */
+        }
+        .image-placeholder {
+          background-color: #eee;
+          width: 100%;
+          height: 90%; /* Match web height */
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .image-container img {
+          max-width: 100%;
+          height: auto;
+        }
+        .date-stamp {
+          background-color: rgba(0, 0, 0, 0.7);
+          color: red;
+        }
+        .page-break {
+          page-break-after: always; /* Force a page break */
+        }
+        /* Ensure the header container is visible in the PDF */
+        .header-container {
+          display: block !important; /* Force block layout in print */
+        }
+        /* Hide unnecessary elements for printing */
+        .camera-section, .actions {
+          display: none;
+        }
+        /* Table Header Styles for Print */
+        .table-header {
+          display: grid !important; /* Force grid layout in print */
+          grid-template-columns: repeat(2, 1fr) !important; /* Match the template grid */
+          gap: 0 !important; /* No gap between columns */
+          border: 0.75pt solid #000000 !important; /* Border around the table header */
+          background-color: #d9d9d9 !important; /* Force background color */
+          -webkit-print-color-adjust: exact; /* Ensure background color is printed */
+          print-color-adjust: exact; /* Standard property */
+        }
+        .table-header div {
+          padding: 5px !important; /* Add padding for better spacing */
+          text-align: center !important; /* Center-align text */
+          border-right: 0.75pt solid #000000 !important; /* Right border for each cell */
+        }
+        .table-header div:last-child {
+          border-right: none !important; /* Remove right border for the last cell */
+        }
+        /* Ensure the bottom border under the input div is visible in print */
+        .header-row:nth-child(3) {
+          border-bottom: 0.75pt solid #000000 !important; /* Force bottom border */
+          padding-bottom: 5px !important; /* Add padding to separate the border from inputs */
+        }
+      `);	    
       printWindow.document.write('</style></head><body>');
 
       // Add the header div to the print preview
