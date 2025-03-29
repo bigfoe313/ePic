@@ -496,23 +496,23 @@
         <!-- First Row: Case # and Today’s Date -->
         <div class="header-row">
           <span style="font-family:Arial; font-size:10.5pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Case #:</span>
-          <input type="text" class="header-input" value="261-931859" style="width: 100px;">
+          <input type="text" class="header-input" value="" style="width: 100px;">
           <span style="font-family:Arial; font-size:10.5pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Today’s Date:</span>
-          <input type="date" class="header-input" value="2025-01-23" style="width: 120px;">
+          <input type="date" class="header-input" value="" style="width: 120px;">
         </div>
 
         <!-- Second Row: Full Address -->
         <div class="header-row">
           <span style="font-family:Arial; font-size:10pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Full Address:</span>
-          <input type="text" class="header-input full-width" value="2215 Camel Dr. Sterling Heights, MI 48310" style="width: 400px;">
+          <input type="text" class="header-input full-width" value="" style="width: 400px;">
         </div>
 
         <!-- Third Row: Inspector/Appraiser and Reason Taken -->
         <div class="header-row">
           <span style="font-family:Arial; font-size:10pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Inspector/Appraiser:</span>
-          <input type="text" class="header-input" value="Wendy Hopkins" style="width: 150px;">
+          <input type="text" class="header-input" value="" style="width: 150px;">
           <span style="font-family:Arial; font-size:10pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Reason taken:</span>
-          <input type="text" class="header-input" value="Routine" style="width: 120px;">
+          <input type="text" class="header-input" value="" style="width: 120px;">
         </div>
       </div>
     </div>
@@ -716,6 +716,14 @@
         /* Hide unnecessary elements for printing */
         .camera-section, .actions {
           display: none;
+        }
+        .header-input {
+          font-family: Arial, sans-serif;
+          font-size: 10.5pt;
+          border: none;
+          padding: 2px;
+          margin: 0 2px;
+          width: 45%; /* Adjust width for two inputs per row */
         }
         /* Table Header Styles for Print */
         .table-header {
