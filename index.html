@@ -709,9 +709,21 @@
         .page-break {
           page-break-after: always; /* Force a page break */
         }
-        /* Ensure the header container is visible in the PDF */
         .header-container {
-          display: block !important; /* Force block layout in print */
+          display: flex;
+          align-items: center;  /* Vertically center items */
+        }
+
+        /* First div: Width equals content */
+        .header-container div:first-child {
+          flex: 0 0 auto;      /* Don't grow, don't shrink, width = content */
+          white-space: nowrap; /* Prevent text wrapping (optional) */
+        }
+
+        /* Second div: Takes remaining space */
+        .header-container div:last-child {
+          flex: 1;             /* Grow to fill available space */
+          min-width: 0;        /* Prevent overflow (critical for long content) */
         }
         /* Hide unnecessary elements for printing */
         .camera-section, .actions {
