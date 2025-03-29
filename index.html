@@ -90,7 +90,7 @@
 
     #camera-feed {
       width: auto;
-      max-width: 100%;
+      max-width: 300px;
       aspect-ratio: 1 / 1;  /* Enforce square shape */
       border: 2px solid #ccc;
       background-color: #000;
@@ -620,7 +620,10 @@
 
     navigator.mediaDevices.getUserMedia({
       video: {
-        facingMode: "environment" // Use the back camera
+        aspectRatio: 1, // Request a square aspect ratio
+        width: { ideal: 1280 },  // Try for a square resolution
+        height: { ideal: 1280 },
+       facingMode: "environment" // Use the back camera
       }
     })
       .then(stream => {
