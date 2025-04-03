@@ -1,4 +1,4 @@
-<!<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -280,6 +280,92 @@
       background-color: #0056b3;
     }    
     
+    /* Authentication Modal Styles */
+    .auth-modal {
+      display: none;
+      position: fixed;
+      z-index: 1001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+    }
+
+    .auth-modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 25px;
+      width: 350px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .auth-close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .auth-close:hover {
+      color: #000;
+    }
+
+    .auth-header {
+      margin-bottom: 20px;
+      color: #333;
+      text-align: center;
+    }
+
+    .auth-form input {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    .auth-form button {
+      width: 100%;
+      padding: 12px;
+      background: #4285f4;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      margin-top: 10px;
+    }
+
+    .auth-form button:hover {
+      background: #3367d6;
+    }
+
+    .auth-toggle {
+      color: #4285f4;
+      text-decoration: none;
+      cursor: pointer;
+      text-align: center;
+      display: block;
+      margin-top: 15px;
+    }
+
+    .auth-toggle:hover {
+      text-decoration: underline;
+    }
+
+    .auth-error {
+      color: #d32f2f;
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
+    
     /* Print Styles */
     @media print {
       body {
@@ -442,7 +528,7 @@
           border-radius: 5px;
           cursor: pointer; margin: 0 auto;">Property</button>
     
-    <!-- Modal -->
+    <!-- Property Modal -->
     <div id="property-modal" class="modal">
       <div class="modal-content">
         <span class="close">&times;</span>
@@ -453,7 +539,7 @@
             <input type="text" id="case-number" name="case-number" style="width: 100px;" required>
           </div>
           <div class="form-group">
-            <label for="todays-date">Today’s Date:</label>
+            <label for="todays-date">Today's Date:</label>
             <input type="date" id="todays-date" name="todays-date" style="width: 120px;" required>
           </div>
           <div class="form-group">
@@ -483,6 +569,47 @@
         </form>
       </div>
     </div>  
+
+    <!-- Authentication Modal -->
+    <div id="auth-modal" class="auth-modal">
+      <div class="auth-modal-content">
+        <span class="auth-close">&times;</span>
+        
+        <!-- Sign-in Form -->
+        <div id="signin-form">
+          <h2 class="auth-header">Sign In</h2>
+          <div class="auth-form">
+            <input type="email" id="login-email" placeholder="Email" required>
+            <input type="password" id="login-password" placeholder="Password" required>
+            <div id="login-error" class="auth-error"></div>
+            <button id="signin-btn">Sign In</button>
+            <a class="auth-toggle" id="show-signup">Don't have an account? Sign Up</a>
+          </div>
+        </div>
+
+        <!-- Sign-up Form (Hidden by default) -->
+        <div id="signup-form" style="display:none;">
+          <h2 class="auth-header">Choose Plan</h2>
+          <div class="auth-form">
+            <div style="display: flex; gap: 15px; margin: 15px 0;">
+              <div style="flex: 1; padding: 15px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; text-align: center;" class="plan" data-plan="monthly">
+                <h3 style="margin: 0 0 5px 0;">Monthly</h3>
+                <p style="margin: 0;">$4.99/month</p>
+              </div>
+              <div style="flex: 1; padding: 15px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; text-align: center;" class="plan" data-plan="yearly">
+                <h3 style="margin: 0 0 5px 0;">Yearly</h3>
+                <p style="margin: 0;">$49.99/year (17% off)</p>
+              </div>
+            </div>
+            <input type="email" id="signup-email" placeholder="Email" required>
+            <input type="password" id="signup-password" placeholder="Password (min 8 chars)" required>
+            <div id="signup-error" class="auth-error"></div>
+            <button id="signup-btn">Create Account</button>
+            <a class="auth-toggle" id="show-signin">Already have an account? Sign In</a>
+          </div>
+        </div>
+      </div>
+    </div>
   
     <!-- Header Div with Image and Input Fields -->
     <div class="header-container">
@@ -493,11 +620,11 @@
 
       <!-- Input Fields Div -->
       <div>
-        <!-- First Row: Case # and Today’s Date -->
+        <!-- First Row: Case # and Today's Date -->
         <div class="header-row">
           <span style="font-family:Arial; font-size:10.5pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Case #:</span>
           <input type="text" class="header-input" value="" style="width: 100px;">
-          <span style="font-family:Arial; font-size:10.5pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Today’s Date:</span>
+          <span style="font-family:Arial; font-size:10.5pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Today's Date:</span>
           <input type="date" class="header-input" value="" style="width: 120px;">
         </div>
 
@@ -613,7 +740,10 @@
   </div>
 
   <script>
-    // Access the camera (back camera)
+     // Track login state
+    let isLoggedIn = false;
+
+   // Access the camera (back camera)
     const video = document.getElementById('camera-feed');
     const captureButton = document.getElementById('capture-button');
     const sectionSelect = document.getElementById('section-select');
@@ -643,7 +773,10 @@
 
     // Print Preview
     document.getElementById('save-pdf').addEventListener('click', function() {
-      // Create a new window for print preview
+      // Show authentication modal
+      if (!isLoggedIn) {
+      	document.getElementById('auth-modal').style.display = 'block';
+      } else {
       const printWindow = window.open('', '', 'width=800,height=600');
       printWindow.document.write('<html><head><title>Inspection Report</title>');
       printWindow.document.write('<style>');
@@ -825,13 +958,18 @@
       // Close the document and trigger print preview
       printWindow.document.close();
       printWindow.print();
+      }
     });
 
     // Array to store captured photos
     let capturedPhotos = [];
-
+    
     // Save Pics (actually creates downloadable HTML file)
     document.getElementById('share-email').addEventListener('click', function() {
+      // Show authentication modal
+      if (!isLoggedIn) {
+      	document.getElementById('auth-modal').style.display = 'block';
+      } else {
       if (capturedPhotos.length === 0) {
         alert('No photos to share!');
         return;
@@ -873,6 +1011,7 @@
 
       // Create and trigger download
       downloadHTMLFile(htmlContent, 'inspection_report.html');
+      }
     });
 
     // Function to download HTML file
@@ -1056,7 +1195,7 @@
       captureButton.dataset.listenerAttached = 'true';
     }
 
-	// Get the modal and button elements
+    // Get the modal and button elements
     const propertyButton = document.getElementById('property-button');
     const modal = document.getElementById('property-modal');
     const closeButton = document.querySelector('.close');
@@ -1079,22 +1218,106 @@
       }
     });
 
-    // Handle form submission
-    // 1. First, add this HTML to your modal (before the submit button):
-    /*
-    <div class="form-group">
-      <label>Company Logo:</label>
-      <input type="file" id="logo-upload" accept="image/*" style="display: none;">
-      <button type="button" id="upload-logo-btn" class="btn btn-secondary">Upload Logo</button>
-      <button type="button" id="use-default-logo" class="btn btn-secondary">Use Default Logo</button>
-      <div id="logo-preview" style="margin: 10px 0;">
-        <img src="" style="max-width: 100px; max-height: 100px; display: none;" alt="Logo Preview">
-      </div>
-    </div>
-    */
-    
-    // 2. Then add this JavaScript:
-    
+    // Authentication Modal Logic
+    const authModal = document.getElementById('auth-modal');
+    const authClose = document.querySelector('.auth-close');
+    const signinForm = document.getElementById('signin-form');
+    const signupForm = document.getElementById('signup-form');
+    const showSignup = document.getElementById('show-signup');
+    const showSignin = document.getElementById('show-signin');
+
+    // Close auth modal
+    authClose.addEventListener('click', () => {
+      authModal.style.display = 'none';
+    });
+
+    // Close auth modal when clicking outside
+    window.addEventListener('click', (event) => {
+      if (event.target === authModal) {
+        authModal.style.display = 'none';
+      }
+    });
+
+    // Toggle between sign-in and sign-up forms
+    showSignup.addEventListener('click', (e) => {
+      e.preventDefault();
+      signinForm.style.display = 'none';
+      signupForm.style.display = 'block';
+    });
+
+    showSignin.addEventListener('click', (e) => {
+      e.preventDefault();
+      signupForm.style.display = 'none';
+      signinForm.style.display = 'block';
+    });
+
+    // Plan selection
+    document.querySelectorAll('.plan').forEach(plan => {
+      plan.addEventListener('click', () => {
+        document.querySelectorAll('.plan').forEach(p => {
+          p.style.borderColor = '#ddd';
+          p.style.backgroundColor = 'white';
+        });
+        plan.style.borderColor = '#4285f4';
+        plan.style.backgroundColor = '#f0f7ff';
+      });
+    });
+
+    // Sign in functionality (placeholder)
+    document.getElementById('signin-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      
+      if (!email || !password) {
+        document.getElementById('login-error').style.display = 'block';
+        document.getElementById('login-error').textContent = 'Please enter both email and password';
+        return;
+      }
+      
+      // Here you would typically call your authentication service
+      console.log('Sign in attempt with:', email, password);
+      
+      // For demo purposes, just close the modal
+      isLoggedIn = true;
+      authModal.style.display = 'none';
+      alert('Sign in successful! (Demo only - no actual authentication)');
+    });
+
+    // Sign up functionality (placeholder)
+    document.getElementById('signup-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      const selectedPlan = document.querySelector('.plan[style*="border-color: rgb(66, 133, 244)"]')?.dataset.plan;
+      
+      if (!email || !password) {
+        document.getElementById('signup-error').style.display = 'block';
+        document.getElementById('signup-error').textContent = 'Please enter both email and password';
+        return;
+      }
+      
+      if (!selectedPlan) {
+        document.getElementById('signup-error').style.display = 'block';
+        document.getElementById('signup-error').textContent = 'Please select a subscription plan';
+        return;
+      }
+      
+      if (password.length < 8) {
+        document.getElementById('signup-error').style.display = 'block';
+        document.getElementById('signup-error').textContent = 'Password must be at least 8 characters';
+        return;
+      }
+      
+      // Here you would typically call your authentication and payment service
+      console.log('Sign up attempt with:', email, password, 'Plan:', selectedPlan);
+      
+      // For demo purposes, just close the modal
+      isLoggedIn = true;
+      authModal.style.display = 'none';
+      alert(`Account created! (Demo only - no actual account created)\nSelected plan: ${selectedPlan}`);
+    });
+
     // Default logo as base64 encoded placeholder (small transparent PNG)
     const DEFAULT_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
     
@@ -1192,7 +1415,6 @@
       // Close the modal
       modal.style.display = 'none';
     });    
-
 
     // Initialize with default logo
     updateLogoPreview();
