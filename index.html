@@ -283,22 +283,25 @@
     /* Authentication Modal Styles */
     .auth-modal {
       display: none;
+      justify-content: center;
+      align-items: center;
       position: fixed;
       z-index: 1001;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0,0,0,0.7);
+      background-color: rgba(0, 0, 0, 0.7);
     }
 
     .auth-modal-content {
       background-color: #fff;
-      margin: 10% auto;
+      width: 90%;
+      max-width: 350px;
       padding: 25px;
-      width: 350px;
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      margin: 10px auto;
     }
 
     .auth-close {
@@ -319,8 +322,13 @@
       text-align: center;
     }
 
+    .auth-form {
+      display: flex; /* Flexbox for form content */
+      flex-direction: column; /* Stack form elements vertically */
+      align-items: center; /* Center horizontally */
+    }
+
     .auth-form input {
-      display: block;
       width: 100%;
       padding: 12px;
       margin: 10px 0;
@@ -365,7 +373,7 @@
       margin-top: 5px;
       display: none;
     }
-    
+
     /* Print Styles */
     @media print {
       body {
