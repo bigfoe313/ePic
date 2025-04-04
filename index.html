@@ -1292,40 +1292,57 @@
       alert('Sign in successful! (Demo only - no actual authentication)');
     });
 
-    // Sign up functionality (placeholder)
-    document.getElementById('signup-btn').addEventListener('click', (e) => {
-      e.preventDefault();
-      const email = document.getElementById('signup-email').value;
-      const password = document.getElementById('signup-password').value;
-      const selectedPlan = document.querySelector('.plan[style*="border-color: rgb(66, 133, 244)"]')?.dataset.plan;
-      
-      if (!email || !password) {
-        document.getElementById('signup-error').style.display = 'block';
-        document.getElementById('signup-error').textContent = 'Please enter both email and password';
-        return;
-      }
-      
-      if (!selectedPlan) {
-        document.getElementById('signup-error').style.display = 'block';
-        document.getElementById('signup-error').textContent = 'Please select a subscription plan';
-        return;
-      }
-      
-      if (password.length < 8) {
-        document.getElementById('signup-error').style.display = 'block';
-        document.getElementById('signup-error').textContent = 'Password must be at least 8 characters';
-        return;
-      }
-      
-      // Here you would typically call your authentication and payment service
-      console.log('Sign up attempt with:', email, password, 'Plan:', selectedPlan);
-      
-      // For demo purposes, just close the modal
-      isLoggedIn = true;
-      authModal.style.display = 'none';
-      alert(`Account created! (Demo only - no actual account created)\nSelected plan: ${selectedPlan}`);
-    });
+    // Wait for DOM to load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set up plan selection
+      document.querySelectorAll('.plan').forEach(plan => {
+        plan.addEventListener('click', function() {
+          // Remove 'selected' from all plans
+          document.querySelectorAll('.plan').forEach(p => p.classList.remove('selected'));
+          // Add 'selected' to clicked plan
+          this.classList.add('selected');
+        });
+      });
 
+      // Sign up functionality
+      document.getElementById('signup-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+        const selectedPlan = document.querySelector('.plan.selected')?.dataset.plan;
+
+        // Clear previous errors
+        document.getElementById('signup-error').style.display = 'none';
+
+        if (!email || !password) {
+          showError('Please enter both email and password');
+          return;
+        }
+
+        if (!selectedPlan) {
+          showError('Please select a subscription plan');
+          return;
+        }
+
+        if (password.length < 8) {
+          showError('Password must be at least 8 characters');
+          return;
+        }
+
+        // Success case
+        console.log('Sign up attempt:', { email, password, plan: selectedPlan });
+        isLoggedIn = true;
+        document.getElementById('auth-modal').style.display = 'none';
+        alert(`Account created! (Demo)\nPlan: ${selectedPlan}`);
+      });
+
+      function showError(message) {
+        const errorElement = document.getElementById('signup-error');
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+      }
+    });
+    
     // Default logo as base64 encoded placeholder (small transparent PNG)
     const DEFAULT_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
     
