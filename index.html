@@ -397,7 +397,7 @@
       .section {
         border: 0.75pt solid #000000; /* Border around each section */
         background-color: white;
-        min-height: 150px; /* Fixed height for sections */
+        min-height: 220px; /* Fixed height for sections */
         page-break-inside: avoid; /* Avoid breaking sections across pages */
         padding: 10px; /* Match web padding */
         display: flex;
@@ -810,7 +810,7 @@
         .section {
           border: 0.75pt solid #000000; /* Border around each section */
           background-color: #f9f9f9;
-          min-height: 180px; /* Fixed height for sections */
+          min-height: 220px; /* Fixed height for sections */
           page-break-inside: avoid; /* Avoid breaking sections across pages */
           padding: 10px; /* Match web padding */
           display: flex;
@@ -936,7 +936,7 @@
         // Write the section HTML
         printWindow.document.write('<div class="section">');
         if (sectionImage) {
-          printWindow.document.write(`<div class="image-container"><img src="${sectionImage.src}" alt="${sectionTitle}" style="max-height: 180px;"></div>`);
+          printWindow.document.write(`<div class="image-container"><img src="${sectionImage.src}" alt="${sectionTitle}" style="max-height: 220px;"></div>`);
         }
         printWindow.document.write(`<h3>${sectionTitle}</h3>`);
         printWindow.document.write('</div>');
