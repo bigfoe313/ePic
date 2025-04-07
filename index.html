@@ -791,9 +791,8 @@
       printWindow.document.write(`
         body {
           font-family: Arial, sans-serif;
-          margin-right: 90px; /* Match web margins */
-          margin-left: 90px; /* Match web margins */
-          margin-bottom: 90px; /* Match web margins */
+          margin: 96px; /* Match web margins */
+          margin-top: 0px;
           padding: 0;
           background-color: #fff;
         }
@@ -835,15 +834,13 @@
         }
         .image-placeholder {
           background-color: #eee;
-          width: 100%;
-          height: 95%; /* Match web height */
+          aspect-ratio: 1 / 1;
           display: flex;
           align-items: center;
           justify-content: center;
         }
         .image-container img {
-          max-width: 100%;
-          height: auto;
+          aspect-ratio: 1.4 / 1;
         }
         .date-stamp {
           background-color: rgba(0, 0, 0, 0.7);
