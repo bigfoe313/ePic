@@ -16,7 +16,7 @@
     .container {
       max-width: 600px;
       margin: 0 auto;
-      padding: 0px;
+      padding: 10px;
       background-color: #fff;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
@@ -638,23 +638,23 @@
       <div>
         <!-- First Row: Case # and Today's Date -->
         <div class="header-row">
-          <span style="font-family:Arial; font-size:10.5pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Case #:</span>
+          <span style="font-family:Arial; font-size:10.5pt; width: 120px; display: inline-block; text-align: right; margin-right: 0px;">Case #:</span>
           <input type="text" class="header-input" value="" style="width: 100px;">
-          <span style="font-family:Arial; font-size:10.5pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Today's Date:</span>
+          <span style="font-family:Arial; font-size:10.5pt; width: 120px; display: inline-block; text-align: right; margin-right: 0px;">Today's Date:</span>
           <input type="date" class="header-input" value="" style="width: 120px;">
         </div>
 
         <!-- Second Row: Full Address -->
         <div class="header-row">
-          <span style="font-family:Arial; font-size:10pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Full Address:</span>
+          <span style="font-family:Arial; font-size:10pt; width: 120px; display: inline-block; text-align: right; margin-right: 0px;">Full Address:</span>
           <input type="text" class="header-input full-width" value="" style="width: 400px;">
         </div>
 
         <!-- Third Row: Inspector/Appraiser and Reason Taken -->
         <div class="header-row">
-          <span style="font-family:Arial; font-size:10pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Inspector/Appraiser:</span>
+          <span style="font-family:Arial; font-size:10pt; width: 120px; display: inline-block; text-align: right; margin-right: 0px;">Inspector/Appraiser:</span>
           <input type="text" class="header-input" value="" style="width: 150px;">
-          <span style="font-family:Arial; font-size:10pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Reason taken:</span>
+          <span style="font-family:Arial; font-size:10pt; width: 120px; display: inline-block; text-align: right; margin-right: 0px;">Reason taken:</span>
           <input type="text" class="header-input" value="" style="width: 120px;">
         </div>
       </div>
@@ -865,7 +865,7 @@
         .container {
           max-width: 100%;
           box-shadow: none;
-          padding: 0px; /* Match web padding */
+          padding: 20px; /* Match web padding */
         }
         .template {
           display: grid;
@@ -941,7 +941,7 @@
           font-family: Arial, sans-serif;
           font-size: 10.5pt;
           border: none;
-          padding: 2px;
+          padding: 0px;
           margin: 0 2px;
           width: 45%; /* Adjust width for two inputs per row */
         }
@@ -1470,17 +1470,17 @@
         </div>
         <div>
           <div class="header-row">
-            <span style="font-family:Arial; font-size:10.5pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Case #:</span>
+            <span style="font-family:Arial; font-size:10.5pt; width: 120px; display: inline-block; text-align: right; margin-right: 0px;">Case #:</span>
             <input type="text" style="width: 100px; font-weight: bold;" class="header-input" value="${caseNumber}">
             <span style="font-family:Arial; font-size:10.5pt; width: 90px; display: inline-block; text-align: right; margin-right: 0px;">Today's Date:</span>
             <input type="date" style="width: 120px; font-weight: bold;" class="header-input" value="${todaysDate}">
           </div>
           <div class="header-row">
-            <span style="font-family:Arial; font-size:10pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Full Address:</span>
+            <span style="font-family:Arial; font-size:10pt; width: 120px; display: inline-block; text-align: right; margin-right: 0px;">Full Address:</span>
             <input type="text" style="width: 400px; font-weight: bold;" class="header-input full-width" value="${fullAddress}">
           </div>
           <div class="header-row">
-            <span style="font-family:Arial; font-size:10pt; width: 120px; display: inline-block; text-align: right; margin-right: 10px;">Inspector/Appraiser:</span>
+            <span style="font-family:Arial; font-size:10pt; width: 120px; display: inline-block; text-align: right; margin-right: 0px;">Inspector/Appraiser:</span>
             <input type="text" style="width: 150px; font-weight: bold;" class="header-input" value="${inspector}">
             <span style="font-family:Arial; font-size:10pt; width: 90px; display: inline-block; text-align: right; margin-right: 0px;">Reason taken:</span>
             <input type="text" style="width: 140px; font-weight: bold;" class="header-input" value="${reasonTaken}">
