@@ -575,7 +575,7 @@
               <label>Company Logo:</label>
               <input type="file" id="logo-upload" accept="image/*" style="display: none;">
               <button type="button" id="upload-logo-btn" class="btn btn-secondary">Upload Logo</button>
-              <button type="button" id="use-default-logo" class="btn btn-secondary">Use Default Logo</button>
+              <button type="button" id="use-default-logo" class="btn btn-secondary">Remove Logo</button>
               <div id="logo-preview" style="margin: 10px 0;">
                 <img src="" style="max-width: 100px; max-height: 100px; display: none;" alt="Logo Preview">
               </div>
@@ -1447,16 +1447,17 @@
       updateLogoPreview();
     });
     
-    function updateLogoPreview() {
-      const previewImg = document.querySelector('#logo-preview img');
-      if (previewImg) {
-        previewImg.src = currentLogo;
-        previewImg.style.display = 'block';
-        previewImg.onerror = function() {
-          this.src = DEFAULT_LOGO;
-        };
-      }
-    }
+function updateLogoPreview() {
+  const previewImg = document.querySelector('#logo-preview img');
+  if (previewImg) {
+    previewImg.src = currentLogo;
+    previewImg.style.display = 'block';
+    previewImg.onerror = function() {
+      this.src = ''; // Set the source to an empty string
+      this.style.display = 'none'; // Hide the image element
+    };
+  }
+}
 
     // Modified header population function
     function populateHeader(caseNumber, todaysDate, fullAddress, inspector, reasonTaken) {
