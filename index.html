@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -593,13 +594,13 @@
         
         <!-- Sign-in Form -->
         <div id="signin-form">
-          <h2 class="auth-header">Sign In</h2>
+          <h2 class="auth-header">Sign In <br>(free for 7 days)</h2>
           <div class="auth-form">
-            <input type="email" id="login-email" placeholder="Email" required>
-            <input type="password" id="login-password" placeholder="Password" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input hidden type="password" id="login-password" placeholder="Password" required>
             <div id="login-error" class="auth-error"></div>
-            <button id="signin-btn">Sign In</button>
-            <a class="auth-toggle" id="show-signup">Don't have an account? Sign Up</a>
+            <button onclick="login()">Sign In</button>
+            <a hidden class="auth-toggle" id="show-signup" style="display: none;">Don't have an account? Sign Up</a>
           </div>
         </div>
 
@@ -1316,13 +1317,13 @@
       signinForm.style.display = 'none';
       signupForm.style.display = 'block';
     });
-
+/*
     showSignin.addEventListener('click', (e) => {
       e.preventDefault();
       signupForm.style.display = 'none';
       signinForm.style.display = 'block';
     });
-
+*/
     // Plan selection
     document.querySelectorAll('.plan').forEach(plan => {
       plan.addEventListener('click', () => {
@@ -1509,5 +1510,21 @@
     updateLogoPreview();
 
   </script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/magic-sdk/dist/magic.js"></script>
+  
+  <script>
+    const magic = new Magic('pk_live_B20D41B051DECDBC');
+
+    async function login() {
+      const email = document.getElementById("email").value.trim().toLowerCase();
+
+        await magic.auth.loginWithMagicLink({ email });
+        isLoggedIn = true;
+        authModal.style.display = 'none';
+        alert("✅ Logged in!");
+    }
+  </script>  
+  
 </body>
 </html>
