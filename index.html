@@ -437,6 +437,17 @@
             cursor: default; /* No longer clickable */
         }
         
+    #start-button {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: 2px solid black;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
     /* Print Styles */
     @media print {
       body {
@@ -745,7 +756,8 @@
     <!-- Camera Section -->
     <div class="camera-section">
       <video id="camera-feed" autoplay></video>
-      <button id="capture-button">Take Photo</button>
+        <button id="capture-button">Take Photo</button>
+        <button id="start-button" style="display:none;">Start Camera</button>
       <select id="section-select">
         <option value="blank">Blank</option>
         <option value="ac-unit">AC unit</option>
@@ -834,36 +846,52 @@
     let currentScale = 1;
     let initialDistance = null;
 
-    // Request camera access with zoom capability
+    // iOS-specific setup
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      video.setAttribute('playsinline', 'true');
+      video.setAttribute('webkit-playsinline', 'true');
+      video.muted = true; // Required for autoplay on iOS
+    }
+
+    // Request camera access
     navigator.mediaDevices.getUserMedia({
       video: {
         aspectRatio: 1,
         width: { ideal: 1280 },
         height: { ideal: 1280 },
         facingMode: "environment",
-        // Enable advanced features for mobile devices
-        advanced: [{ zoom: true }]
+        // Simplified constraints for better iOS compatibility
       }
     })
     .then(stream => {
       video.srcObject = stream;
 
-      // Get the video track to control zoom
-      const videoTrack = stream.getVideoTracks()[0];
-      const capabilities = videoTrack.getCapabilities();
-      const settings = videoTrack.getSettings();
+      // iOS requires play() to be called after user interaction
+      const playPromise = video.play();
 
-      // Check if zoom is supported
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          // Show a button to start the camera if autoplay fails
+          console.log('Autoplay prevented:', error);
+          document.getElementById('start-button').style.display = 'block';
+        });
+      }
+
+      // Get video track
+      const videoTrack = stream.getVideoTracks()[0];
+
+      // Check for zoom support
+      const capabilities = videoTrack.getCapabilities();
       if (!capabilities.zoom) {
-        console.log('Zoom not supported by this device');
+        console.log('Zoom not supported');
         return;
       }
 
-      // Set up pinch-to-zoom gesture
-      video.addEventListener('touchstart', handleTouchStart, { passive: false });
-      video.addEventListener('touchmove', handleTouchMove, { passive: false });
-      video.addEventListener('touchend', handleTouchEnd, { passive: false });
+      // Zoom variables
+      let initialDistance = null;
+      let currentScale = 1;
 
+      // Touch handlers
       function handleTouchStart(e) {
         if (e.touches.length === 2) {
           e.preventDefault();
@@ -876,14 +904,16 @@
           e.preventDefault();
           const currentDistance = getDistance(e.touches[0], e.touches[1]);
 
-          if (initialDistance !== null) {
+          if (initialDistance) {
             const scale = currentDistance / initialDistance;
-            currentScale = Math.min(Math.max(1, currentScale * scale), capabilities.zoom.max);
+            currentScale = Math.min(
+              Math.max(1, currentScale * scale), 
+              capabilities.zoom.max
+            );
 
-            // Apply zoom to camera
             videoTrack.applyConstraints({
               advanced: [{ zoom: currentScale }]
-            });
+            }).catch(e => console.log('Zoom error:', e));
           }
           initialDistance = currentDistance;
         }
@@ -893,15 +923,24 @@
         initialDistance = null;
       }
 
-      function getDistance(touch1, touch2) {
-        const dx = touch1.clientX - touch2.clientX;
-        const dy = touch1.clientY - touch2.clientY;
-        return Math.sqrt(dx * dx + dy * dy);
+      function getDistance(t1, t2) {
+        return Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
       }
+
+      // Add event listeners
+      video.addEventListener('touchstart', handleTouchStart, { passive: false });
+      video.addEventListener('touchmove', handleTouchMove, { passive: false });
+      video.addEventListener('touchend', handleTouchEnd);
     })
     .catch(error => {
-      console.error('Error accessing camera:', error);
-      alert('Unable to access camera. Please ensure permissions are granted.');
+      console.error('Camera error:', error);
+      alert('Camera access error: ' + error.message);
+    });
+
+    // Fallback button for iOS
+    document.getElementById('start-button').addEventListener('click', () => {
+      video.play();
+      this.style.display = 'none';
     });
 
     // Function to get the current date in a formatted string (without time)
