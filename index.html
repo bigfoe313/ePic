@@ -659,9 +659,10 @@
         
         <!-- Sign-in Form -->
         <div id="signin-form">
-          <h2 class="auth-header">Sign In <br>(free thru April 30, 2025)</h2>
+          <h2 class="auth-header">Cell Phone Sign-In <br>(free thru April 30, 2025)</h2>
           <div class="auth-form">
-            <input type="email" id="email" placeholder="Email" required>
+            <input type="tel" id="phone" placeholder="123-456-7890" required>
+            <input hidden type="email" id="email" placeholder="Email" required>
             <input hidden type="password" id="login-password" placeholder="Password" required>
             <div id="login-error" class="auth-error"></div>
             <button onclick="login()">Sign In</button>
@@ -1621,10 +1622,26 @@ function updateLogoPreview() {
   <script>
     const magic = new Magic('pk_live_B20D41B051DECDBC');
 
-    async function login() {
-      const email = document.getElementById("email").value.trim().toLowerCase();
+    function formatPhone(input) {
+      // Remove everything except digits
+      let digits = input.replace(/\D/g, '');
 
-        await magic.auth.loginWithMagicLink({ email });
+      // If the user didn't enter a country code, assume +1
+      if (digits.length === 10) {
+        digits = '1' + digits;
+      }
+
+      return '+' + digits;
+    }
+
+    async function login() {
+      //const email = document.getElementById("email").value.trim().toLowerCase();
+		const rawPhone = document.getElementById('phone').value;
+
+		const phone = formatPhone(rawPhone);
+
+        //await magic.auth.loginWithMagicLink({ email });
+        await magic.auth.loginWithSMS({ phoneNumber: phone });
         isLoggedIn = true;
         authModal.style.display = 'none';
         alert("✅ Logged in!");
