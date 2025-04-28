@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Thank You</title>
+</head>
+<body>
+  <h2>Thank you for your payment!</h2>
+  <p id="msg">Granting access...</p>
+
+  <script>
+    const phone = new URLSearchParams(window.location.search).get("phone")?.trim();
+    const SHEETY_POST_URL = "https://api.sheety.co/f979ce8d3ac11259e63d16ac54a5c932/ePicEmailList/sheet1";
+
+    if (phone) {
+      fetch(SHEETY_POST_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ number: { number: phone } })
+      })
+      .then(res => {
+        if (res.ok) {
+          document.getElementById("msg").innerText = "✅ You're now allowed to log in.";
+        } else {
+          document.getElementById("msg").innerText = "❌ Something went wrong.";
+        }
+      })
+      .catch(() => {
+        document.getElementById("msg").innerText = "❌ Network error.";
+      });
+    } else {
+      document.getElementById("msg").innerText = "❌ No valid phone number found.";
+    }
+  </script>
+</body>
+</html>
