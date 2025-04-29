@@ -1,44 +1,78 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Thank You</title>
+  <meta charset="UTF-8">
+  <title>Thank You - i-Pics</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body>
-  <h2>Thank you for your payment!</h2>
-  <p id="msg">Granting access...</p>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
-  <button id="returnBtn" style="display:none;">Return to i-Pics</button>
+  <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full text-center">
+    <h1 class="text-3xl font-bold text-green-600 mb-4">🎉 Thank You for Your Purchase!</h1>
+    <p class="text-gray-700 mb-6">To activate your access, please confirm your phone number below:</p>
+
+    <div class="flex flex-col space-y-4">
+      <input type="tel" id="phone" placeholder="Enter your phone number"
+        class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-green-400 focus:outline-none" />
+
+      <button onclick="submitPhone()"
+        class="bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition font-semibold">
+        ✅ Confirm Phone
+      </button>
+
+      <p id="status" class="text-sm text-gray-600"></p>
+
+      <button onclick="goHome()"
+        class="bg-gray-300 text-gray-800 py-3 rounded-lg hover:bg-gray-400 transition font-semibold mt-6">
+        🔙 Return to i-Pics
+      </button>
+    </div>
+  </div>
 
   <script>
-    const phone = new URLSearchParams(window.location.search).get("phone")?.trim();
-    const SHEETY_POST_URL = "https://api.sheety.co/f979ce8d3ac11259e63d16ac54a5c932/ePicEmailList/sheet1";
+    const sheetyUrl = 'https://api.sheety.co/f979ce8d3ac11259e63d16ac54a5c932/ePicEmailList/sheet1'; // Replace with your actual Sheety URL
 
-    if (phone) {
-      fetch(SHEETY_POST_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ number: { number: phone } })
-      })
-      .then(res => {
-        if (res.ok) {
-          document.getElementById("msg").innerText = "✅ You're now allowed to log in.";
-        } else {
-          document.getElementById("msg").innerText = "❌ Something went wrong.";
+    async function submitPhone() {
+      const phone = document.getElementById('phone').value.trim();
+
+      if (!phone) {
+        document.getElementById('status').innerText = "⚠️ Please enter your phone number.";
+        return;
+      }
+
+      document.getElementById('status').innerText = "⏳ Submitting...";
+
+      const body = {
+        sheet1: { // Match this to your actual sheet object name (e.g., sheet1)
+          number: phone
         }
-      })
-      .catch(() => {
-        document.getElementById("msg").innerText = "❌ Network error.";
-      });
-      
-      // Show return button after handling
-      document.getElementById("returnBtn").style.display = "inline-block";
-      document.getElementById("returnBtn").onclick = function() {
-        window.location.href = `https://www.inspectionpics.com/?phone=${encodeURIComponent(phone)}`;
       };
 
-    } else {
-      document.getElementById("msg").innerText = "❌ No phone number found.";
+      try {
+        const response = await fetch(sheetyUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+          throw new Error('Sheety error');
+        }
+
+        document.getElementById('status').innerText = "✅ Phone added! You now have full access.";
+      } catch (err) {
+        console.error(err);
+        document.getElementById('status').innerText = "❌ Error submitting phone. Please try again.";
+      }
+    }
+
+    function goHome() {
+      window.location.href = "https://www.inspectionpics.com/";
     }
   </script>
+
 </body>
 </html>
