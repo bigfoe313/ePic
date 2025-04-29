@@ -666,7 +666,7 @@
             <input hidden type="password" id="login-password" placeholder="Password" required>
             <div id="login-error" class="auth-error"></div>
             <button onclick="login()">Sign In</button>
-            <a hidden class="auth-toggle" id="show-signup" style="display: none;">Don't have an account? Sign Up</a>
+            <a class="auth-toggle" id="show-signup" >Don't have an account? Sign Up</a>
           </div>
         </div>
 
@@ -677,17 +677,17 @@
             <div style="display: flex; gap: 15px; margin: 15px 0;">
               <div style="flex: 1; padding: 15px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; text-align: center;" class="plan" data-plan="monthly">
                 <h3 style="margin: 0 0 5px 0;">Monthly</h3>
-                <p style="margin: 0;">$4.99/month</p>
+                <p style="margin: 0;">$3.99/month</p>
               </div>
               <div style="flex: 1; padding: 15px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; text-align: center;" class="plan" data-plan="yearly">
                 <h3 style="margin: 0 0 5px 0;">Yearly</h3>
-                <p style="margin: 0;">$49.99/year (17% off)</p>
+                <p style="margin: 0;">$39.99/year (16% off)</p>
               </div>
             </div>
-            <input type="email" id="signup-email" placeholder="Email" required>
-            <input type="password" id="signup-password" placeholder="Password (min 8 chars)" required>
+            <input hidden type="email" id="signup-email" placeholder="Email" required>
+            <input hidden type="password" id="signup-password" placeholder="Password (min 8 chars)" required>
             <div id="signup-error" class="auth-error"></div>
-            <button id="signup-btn">Create Account</button>
+            <button id="signup-btn">Purchase Plan</button>
             <a class="auth-toggle" id="show-signin">Already have an account? Sign In</a>
           </div>
         </div>
@@ -1422,13 +1422,13 @@
       signinForm.style.display = 'none';
       signupForm.style.display = 'block';
     });
-/*
+
     showSignin.addEventListener('click', (e) => {
       e.preventDefault();
       signupForm.style.display = 'none';
       signinForm.style.display = 'block';
     });
-*/
+
     // Plan selection
     document.querySelectorAll('.plan').forEach(plan => {
       plan.addEventListener('click', () => {
@@ -1473,7 +1473,7 @@
           this.classList.add('selected');
         });
       });
-
+/*
       // Sign up functionality
       document.getElementById('signup-btn').addEventListener('click', (e) => {
         e.preventDefault();
@@ -1505,13 +1505,54 @@
         document.getElementById('auth-modal').style.display = 'none';
         alert(`Account created! (Demo)\nPlan: ${selectedPlan}`);
       });
-
+*/
       function showError(message) {
         const errorElement = document.getElementById('signup-error');
         errorElement.textContent = message;
         errorElement.style.display = 'block';
       }
     });
+    
+    
+  document.addEventListener('DOMContentLoaded', function() {
+    // Track selected plan
+    let selectedPlan = null;
+    
+    // Plan selection handlers
+    const plans = document.querySelectorAll('.plan');
+    plans.forEach(plan => {
+      plan.addEventListener('click', function() {
+        // Remove selected style from all plans
+        plans.forEach(p => p.style.borderColor = '#ddd');
+        
+        // Add selected style to clicked plan
+        this.style.borderColor = '#007bff';
+        selectedPlan = this.getAttribute('data-plan');
+        
+        // Clear any previous error
+        document.getElementById('signup-error').textContent = '';
+      });
+    });
+    
+    // Purchase button handler
+    document.getElementById('signup-btn').addEventListener('click', function() {
+      const errorElement = document.getElementById('signup-error');
+      
+      if (!selectedPlan) {
+        errorElement.textContent = 'Please select a subscription plan';
+        errorElement.style.display = 'block';
+        return;
+      }
+      
+      // Open appropriate Stripe checkout based on selected plan
+      if (selectedPlan === 'monthly') {
+        window.open('https://buy.stripe.com/5kAg0O1iu37r8Kc9AM', '_blank');
+      } else if (selectedPlan === 'yearly') {
+        window.open('https://buy.stripe.com/8wMdSG7GS7nH7G84gr', '_blank');
+      }
+    });
+  });
+    
     
     // Default logo as base64 encoded placeholder (small transparent PNG)
     const DEFAULT_LOGO = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
@@ -1661,6 +1702,12 @@ function updateLogoPreview() {
           alert("Login failed.");
         }
     }
+    
+    const urlPhone = new URLSearchParams(window.location.search).get("phone");
+    if (urlPhone) {
+      document.getElementById("phone").value = urlPhone;
+    }
+    
   </script> 
   
     <script>
