@@ -13,7 +13,7 @@
     <p class="text-gray-700 mb-6">To activate your access, please confirm your phone number below:</p>
 
     <div class="flex flex-col space-y-4">
-      <input type="tel" id="phone" placeholder="Enter your phone number"
+      <input type="tel" id="phone" placeholder="Enter area code and phone number "
         class="border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-green-400 focus:outline-none" />
 
       <button onclick="submitPhone()"
@@ -42,8 +42,22 @@
   <script>
     const sheetyUrl = 'https://api.sheety.co/f979ce8d3ac11259e63d16ac54a5c932/ePicEmailList/sheet1'; // Replace with your actual Sheety URL
 
+    function formatPhone(input) {
+      // Remove everything except digits
+      let digits = input.replace(/\D/g, '');
+
+      // If the user didn't enter a country code, assume +1
+      if (digits.length === 10) {
+        digits = '1' + digits;
+      }
+
+      return '+' + digits;
+    }
+
     async function submitPhone() {
-      const phone = document.getElementById('phone').value.trim();
+      const rawPhone = document.getElementById('phone').value;
+
+      const phone = formatPhone(rawPhone);
 
       if (!phone) {
         document.getElementById('status').innerText = "⚠️ Please enter your phone number.";
