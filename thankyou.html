@@ -31,6 +31,15 @@
   </div>
 
   <script>
+    // Only allow access if user comes from Stripe
+    const referrer = document.referrer;
+    if (!referrer.includes('stripe.com')) {
+      // Not from Stripe? Redirect to homepage
+      window.location.href = 'https://www.inspectionpics.com';
+    }
+  </script>
+
+  <script>
     const sheetyUrl = 'https://api.sheety.co/f979ce8d3ac11259e63d16ac54a5c932/ePicEmailList/sheet1'; // Replace with your actual Sheety URL
 
     async function submitPhone() {
