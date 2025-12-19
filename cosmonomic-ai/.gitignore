@@ -1,0 +1,23 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Env secrets
+.env
+.env.*
+
+# Cloudflare
+.wrangler/
+.wrangler.toml
+.dev.vars
+
+# Build output
+dist/
+.vite/
+
+# OS junk
+.DS_Store
+
+# Tests coverage
+coverage/
