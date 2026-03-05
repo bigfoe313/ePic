@@ -661,8 +661,8 @@
         <div id="signin-form">
           <h2 class="auth-header">Cell Phone Sign-In</h2>
           <div class="auth-form">
-            <input type="tel" id="phone" placeholder="123-456-7890" required>
-            <input hidden type="email" id="email" placeholder="Email" required>
+            <input hidden type="tel" id="phone" placeholder="123-456-7890" required>
+            <input type="email" id="email" placeholder="Email" required>
             <input hidden type="password" id="login-password" placeholder="Password" required>
             <div id="login-error" class="auth-error"></div>
             <button onclick="login()">Sign In</button>
@@ -1658,58 +1658,81 @@ function updateLogoPreview() {
 
   </script>
   
-  <script src="https://cdn.jsdelivr.net/npm/magic-sdk/dist/magic.js"></script>
-  
-  <script>
-    const magic = new Magic('pk_live_B20D41B051DECDBC');
-    
-    const SHEETY_GET_URL = "https://api.sheety.co/f979ce8d3ac11259e63d16ac54a5c932/ePicEmailList/sheet1";
+<script src="https://cdn.jsdelivr.net/npm/magic-sdk/dist/magic.js"></script>
 
-    function formatPhone(input) {
-      // Remove everything except digits
-      let digits = input.replace(/\D/g, '');
+<script>
 
-      // If the user didn't enter a country code, assume +1
-      if (digits.length === 10) {
-        digits = '1' + digits;
-      }
+const magic = new Magic('pk_live_B20D41B051DECDBC');
 
-      return '+' + digits;
+const SHEETY_GET_URL =
+"https://api.sheety.co/f979ce8d3ac11259e63d16ac54a5c932/ePicEmailList/sheet1";
+
+
+
+/* =========================
+   LOGIN
+========================= */
+
+async function login() {
+
+  const email = document
+    .getElementById("email")
+    .value
+    .trim()
+    .toLowerCase();
+
+  if (!email) {
+    alert("Please enter your email.");
+    return;
+  }
+
+  try {
+
+    /* Get allowlist */
+    const res = await fetch(SHEETY_GET_URL);
+    const data = await res.json();
+
+    const allowlist =
+      data.sheet1.map(entry => entry.email.toLowerCase());
+
+    if (!allowlist.includes(email)) {
+      alert("⚠️ You need to purchase access first.");
+      return;
     }
 
-    async function login() {
-      //const email = document.getElementById("email").value.trim().toLowerCase();
-		const rawPhone = document.getElementById('phone').value;
+    /* Magic email login */
+    await magic.auth.loginWithEmailOTP({ email });
 
-		const phone = formatPhone(rawPhone);
+    alert("✅ Logged in!");
 
-        const res = await fetch(SHEETY_GET_URL);
-        const data = await res.json();
-        const allowlist = data.sheet1.map(entry => entry.number);
+    isLoggedIn = true;
 
-        if (!allowlist.includes(phone)) {
-          alert("⚠️ You need to purchase access first.");
-          return;
-        }
+    const authModal = document.getElementById("auth-modal");3					
+    if (authModal) authModal.style.display = "none";
 
-        try {
-          await magic.auth.loginWithSMS({ phoneNumber: phone });
-          alert("✅ Logged in!");
-          isLoggedIn = true;
-          authModal.style.display = 'none';
-        } catch (err) {
-          console.error(err);
-          alert("Login failed.");
-        }
-    }
-    
-    const urlPhone = new URLSearchParams(window.location.search).get("phone");
-    if (urlPhone) {
-      document.getElementById("phone").value = urlPhone;
-    }
-    
-  </script> 
-  
+  } catch (err) {
+
+    console.error(err);
+    alert("Login failed.", err);
+
+  }
+}
+
+
+/* =========================
+   URL PREFILL
+========================= */
+
+const urlEmail =
+  new URLSearchParams(window.location.search).get("email");
+
+if (urlEmail) {
+  const emailField = document.getElementById("email");
+  if (emailField) emailField.value = urlEmail;
+}
+
+</script>
+
     <script>
         (function() {
             'use strict';
