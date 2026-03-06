@@ -595,7 +595,11 @@
       margin: 0; /* Remove default margin */
       text-align: center; /* Center-align text */
     }
-
+    
+    #camera-feed {
+      transform: scaleX(-1);
+    }
+    
   </style>
 </head>
 <body>
@@ -1294,8 +1298,11 @@
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
 
-        // Draw the image onto the canvas
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        // Draw the mirrored image onto the canvas
+        context.save();
+        context.scale(-1, 1);
+        context.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+        context.restore();
 
         // Add date stamp to the image
         const dateStamp = getDateStamp();
